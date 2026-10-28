@@ -1,6 +1,7 @@
 import { Info } from "lucide-react";
 import { Header } from "../../components/Header";
 import { Calendario } from "../../components/Calendario";
+import { ConfirmarReservaModal } from "../../components/ConfirmarReservaModal";
 
 export const Reservas = () => {
   return (
@@ -33,8 +34,9 @@ export const Reservas = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white m-7 w-[60%]">
+        <div className="flex flex-row justify-center shadow items-center bg-white max-w-[60%] overflow-hidden m-7">
             <Calendario></Calendario>
+            <ConfirmarReservaModal></ConfirmarReservaModal>
         </div>
       </main>
     </div>

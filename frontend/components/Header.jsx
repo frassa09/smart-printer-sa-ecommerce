@@ -2,6 +2,7 @@ import { Calendar, PaperBag, User } from "lucide-react";
 import { Profiler, useState } from "react";
 import { LoginModal } from "./LoginModal";
 import { CadastroModal } from "./CadastroModal";
+import { Link } from "react-router-dom";
 
 export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
   const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
