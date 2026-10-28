@@ -1,10 +1,14 @@
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Cardapio } from "./tabs/Cardapio";
+import { Reservas } from "./tabs/Reservas";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" Component={Cardapio}></Route>
-    </Routes>
+    <BrowserRouter>
+      <Routes >
+        <Route path="/cardapio" element={<Cardapio></Cardapio>}></Route>
+        <Route path="/" element={<Reservas></Reservas>}></Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
