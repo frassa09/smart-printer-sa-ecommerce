@@ -1,7 +1,12 @@
 import { Calendar, PaperBag, User } from "lucide-react";
-import { Profiler } from "react";
+import { Profiler, useState } from "react";
+import { LoginModal } from "./LoginModal";
+import { CadastroModal } from "./CadastroModal";
 
 export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
+  const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
+
+  const closeModal = () => setModalType(null);
   return (
     <div className="flex h-25 w-full items-center justify-between px-6 bg-amber-50 border-b">
       <div className="">
@@ -25,11 +30,32 @@ export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
               {qtdItens} itens - R$ {valor}
             </code>
           </div>
-          <div className="bg-[#E46F45] p-1 rounded-xl">
-            <User color="white"></User>
-          </div>
+
+
+          {/* Botão de Usuário para abrir o Login */}
+          <button
+            onClick={() => setModalType('login')}
+            className="bg-[#E46F45] p-1 rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
+            title="Entrar ou Cadastrar"
+          >
+            <User color="white" />
+          </button>
         </div>
       </div>
+
+        {/* Modais acionados pelo estado */}
+      <LoginModal
+        isOpen={modalType === 'login'}
+        onClose={closeModal}
+        onSwitchToRegister={() => setModalType('register')}
+      />
+
+      <CadastroModal
+        isOpen={modalType === 'register'}
+        onClose={closeModal}
+        onSwitchToLogin={() => setModalType('login')}
+      />
+
     </div>
   );
 };
