@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password} = req.body;  // Havia ROLE aqui, mas estou definindo que vem como Client direto!
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Preencha todos os campos obrigatórios.' });
@@ -24,7 +24,7 @@ export const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || 'CLIENT', // Suporta ADMIN, EMPLOYEE, CLIENT
+      role: 'CLIENT', // Suporta apenas CLIENT, sendo necessario craiação de super usuario ou 
     });
 
     return res.status(201).json({

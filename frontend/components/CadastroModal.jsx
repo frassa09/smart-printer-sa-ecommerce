@@ -5,7 +5,7 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
     name: '',
     email: '',
     password: '',
-    role: 'CLIENT',
+    // role: 'CLIENT',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -89,7 +89,7 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
             className="border border-gray-300 p-2.5 rounded font-serif focus:outline-none focus:border-[#303033]"
           />
 
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <label className="text-xs font-serif text-gray-600">Tipo de Perfil</label>
             <select
               name="role"
@@ -101,7 +101,7 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
               <option value="EMPLOYEE">Funcionário</option>
               <option value="ADMIN">Administrador</option>
             </select>
-          </div>
+          </div> */}
 
           <button
             type="submit"
