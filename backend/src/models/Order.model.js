@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import sequelize from '../database/init.js';
 
 export const Order = sequelize.define('Order', {
   status: {
@@ -15,6 +15,8 @@ export const Order = sequelize.define('Order', {
     allowNull: false,
     defaultValue: 0.0,
   },
-});
+
+}, {timestamps: true});
+
 
 export default Order;

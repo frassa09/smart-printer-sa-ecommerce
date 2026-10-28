@@ -6,6 +6,9 @@ import Table from "./Table.model.js";
 import TableSession from "./TableSession.model.js";
 import MenuItem from "./MenuItem.model.js";
 
+import MenuItemIngredient from "./MenuItem.model.js";
+import Product from "./Product.model.js";
+
 
 User.hasMany(Reservation, { foreignKey: 'userId' });
 Reservation.belongsTo(User, { foreignKey: 'userId' });
@@ -34,3 +37,11 @@ OrderItemQuantity.belongsTo(Order, { foreignKey: 'orderId' });
 MenuItem.hasMany(OrderItemQuantity, { foreignKey: 'menuItemId' });
 OrderItemQuantity.belongsTo(MenuItem, { foreignKey: 'menuItemId' });
 
+// Abaixo ingredientes, Estoque
+MenuItem.hasMany(MenuItemIngredient, { foreignKey: 'menuItemId' });
+MenuItemIngredient.belongsTo(MenuItem, { foreignKey: 'menuItemId' });
+
+Product.hasMany(MenuItemIngredient, { foreignKey: 'productId' });
+MenuItemIngredient.belongsTo(Product, { foreignKey: 'productId' });
+
+export {User, Reservation, TableSession, Table, Order, OrderItemQuantity, MenuItem, MenuItemIngredient, Product }

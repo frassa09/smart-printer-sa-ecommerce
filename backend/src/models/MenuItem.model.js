@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+import sequelize from '../database/init.js';
 
 export const MenuItem = sequelize.define('MenuItem', {
   title: {
@@ -14,7 +14,7 @@ export const MenuItem = sequelize.define('MenuItem', {
     allowNull: false,
   },
   category: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM('ENTRADA', 'PRATO_PRINCIPAL', 'SOBREMESA'), 
     allowNull: false,
   },
   available: {
