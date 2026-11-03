@@ -7,11 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password} = req.body;  // Havia ROLE aqui, mas estou definindo que vem como Client direto!
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Preencha todos os campos obrigatórios.' });
-    }
+    const { name, email, password, role} = req.body;  
 
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -24,9 +20,9 @@ export const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: 'CLIENT', // Suporta apenas CLIENT, sendo necessario craiação de super usuario ou 
+      role, // Suporta apenas CLIENT, sendo necessario craiação de super usuario ou 
     });
-
+    
     return res.status(201).json({
       message: 'Usuário cadastrado com sucesso!',
       user: { id: user.id, name: user.name, email: user.email, role: user.role }
@@ -64,3 +60,22 @@ export const login = async (req, res) => {
     return res.status(500).json({ error: 'Erro ao realizar login.' });
   }
 };
+
+export const listAllEmployees = async (req, res)  => {
+  try {
+    const listEmployees = await User.findAll({ 
+      where: {role: 'EMPLOYEE'},
+      attributes: ['id', 'name', 'isActive'],
+      order:[['name', 'ASC']]
+    })
+    
+     
+    return res.json(listEmployees)
+  } catch (error) {
+    return res.status(401).json({error: 'Erro ao listar funcionarios'})
+  }
+}
+
+export const ActivateEmployee = async(req, res) => {
+  
+}

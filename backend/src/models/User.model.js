@@ -20,6 +20,11 @@ export const User = sequelize.define('User', {
     type: DataTypes.ENUM('ADMIN', 'EMPLOYEE', 'CLIENT'),
     defaultValue: 'CLIENT',
   },
+  //somente para EMPLOYEES, validados pelo Admin
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
 });
 
 export default User;
