@@ -1,0 +1,47 @@
+name: Feature Request
+description: Sugira uma nova ideia ou funcionalidade para este projeto.
+title: "[FEATURE]: "
+labels: ["enhancement"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por contribuir com ideias para o projeto! 
+        Preencha as seções abaixo para nos ajudar a entender a sua proposta.
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: O seu pedido está relacionado a algum problema?
+      description: Uma descrição clara e concisa sobre qual é o problema. 
+      placeholder: Ex: Eu fico frustrado quando preciso fazer X e acontece Y...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution-requested
+    attributes:
+      label: Descrição da Solução Desejada
+      description: Uma descrição clara e concisa do que você gostaria que acontecesse.
+      placeholder: Ex: Gostaria que houvesse um botão para exportar os relatórios diretamente em PDF.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Alternativas Consideradas
+      description: Uma descrição clara e concisa de quaisquer soluções ou funcionalidades alternativas que você considerou.
+      placeholder: Ex: Tentei usar a biblioteca X como contorno, mas não atendeu...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Contexto Adicional
+      description: Adicione qualquer outro contexto, mockups ou screenshots sobre a sugestão aqui.
+    validations:
+      required: false
