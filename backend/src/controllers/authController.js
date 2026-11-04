@@ -76,6 +76,47 @@ export const listAllEmployees = async (req, res)  => {
   }
 }
 
+// TESTAR controller abaixo !!!!
 export const ActivateEmployee = async(req, res) => {
-  
-}
+  try {
+    const { id } = req.params;
+
+    // 1. Busca o funcionário pelo ID no banco de dados
+    const employee = await User.findOne({
+      where: { 
+        id, 
+        role: 'EMPLOYEE' 
+      }
+    });
+
+    // 2. Se não encontrar o funcionário, retorna erro 404
+    if (!employee) {
+      return res.status(404).json({ error: 'Funcionário não encontrado.' });
+    }
+
+    // 3. Verifica se já está ativo para evitar updates desnecessários
+    if (employee.isActive) {
+      return res.status(400).json({ message: 'Este funcionário já está ativo.' });
+    }
+
+    // 4. Altera o status e salva no banco de dados
+    employee.isActive = true;
+    await employee.save();
+
+    // 5. Retorna os dados atualizados
+    return res.status(200).json({
+      message: `Funcionário ${employee.name} ativado com sucesso!`,
+      user: {
+        id: employee.id,
+        name: employee.name,
+        email: employee.email,
+        role: employee.role,
+        isActive: employee.isActive,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao ativar funcionário:', error);
+    return res.status(500).json({ error: 'Erro interno ao ativar funcionário.' });
+  }
+};
+
