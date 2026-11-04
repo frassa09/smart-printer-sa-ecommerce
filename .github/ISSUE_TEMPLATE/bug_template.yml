@@ -1,0 +1,92 @@
+name: Bug Report
+description: Relate um problema ou erro no sistema para nos ajudar a corrigi-lo.
+title: "[BUG]: "
+labels: ["bug"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por dedicar seu tempo para reportar este problema. 
+        Preencha os campos abaixo com o máximo de detalhes possível.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Bug
+      description: Forneça uma explicação clara e objetiva sobre o comportamento incorreto.
+      placeholder: Ex: Ao tentar aprovar uma permissão de funcionário, o sistema retorna um erro 500 ou não atualiza a interface.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Módulo / Onde ocorreu?
+      description: Selecione em qual parte da aplicação o erro foi identificado.
+      options:
+        - Frontend (Interface web / Vite)
+        - Backend (API Node.js / Express)
+        - Impressora IoT / Serviço de Impressão
+        - Banco de Dados (Neon / Sequelize)
+        - Autenticação / RBAC
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Passo a Passo para Reproduzir
+      description: Descreva as etapas exatas para reproduzir o problema.
+      placeholder: |
+        1. Acesse o painel com perfil de ADMIN
+        2. Navegue até a tela de Funcionários (/employees)
+        3. Clique no botão 'Ativar' do usuário X
+        4. Observe a resposta da requisição no Console / Network
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Comportamento Esperado
+      description: O que deveria ter acontecido se o sistema estivesse funcionando normalmente?
+      placeholder: Ex: O status do funcionário deveria mudar para 'Ativo' e atualizar a tabela.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Evidências / Screenshots
+      description: Anexe prints da tela, requisições de rede ou logs do terminal. Cole as imagens ou links abaixo com uma breve explicação.
+      placeholder: |
+        | Evidência | Descrição |
+        | --- | --- |
+        | [Cole a imagem/print aqui] | Print da tela mostrando o aviso de erro |
+        | [Cole a imagem do DevTools aqui] | Retorno da requisição na aba Network |
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Informações de Ambiente
+      description: Informe detalhes adicionais do ambiente onde o erro ocorreu.
+      placeholder: |
+        - Sistema Operacional: Windows / macOS / Linux
+        - Navegador (se aplicável): Chrome / Firefox / Edge
+        - Versão do Node.js: v18.x / v20.x
+        - Dispositivo IoT (se aplicável): Modelo / Firmware
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Contexto Adicional
+      description: Adicione qualquer outro detalhe, logs do servidor ou observações relevantes.
+    validations:
+      required: false
