@@ -21,6 +21,20 @@ app.get('/', (req, res) => {
 })
 
 
-await sequelize.sync({alter: true}).then(() => {
-    app.listen(3000, () => console.log(`Aplicação rodando em http://localhost:${port}`))
-})
+async function iniciarServidor() {
+  try {
+    // Testa a conexão com o banco remoto/Neon
+    await sequelize.authenticate();
+    console.log('✅ Conexão com o banco de dados estabelecida com sucesso.');
+
+    const port = process.env.SERVER_PORT || 3000;
+    app.listen(port, () => {
+      console.log(`🚀 Aplicação rodando em http://localhost:${port}`);
+    });
+  } catch (error) {
+    console.error('❌ Não foi possível conectar ao banco de dados:', error);
+    process.exit(1);
+  }
+}
+
+iniciarServidor();
