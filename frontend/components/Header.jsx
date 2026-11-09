@@ -4,27 +4,27 @@ import { LoginModal } from "./LoginModal";
 import { CadastroModal } from "./CadastroModal";
 import { Link } from "react-router-dom";
 
-export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
+export const Header = ({ qtdItens, valor }) => {
   const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
   const [user, setUser] = useState(null);
 
   // Função para ler o usuário logado do localStorage
   const loadUserSession = () => {
-    const storedUser = localStorage.getItem('@app:user');
+    const storedUser = localStorage.getItem("@app:user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
   };
 
   useEffect(() => {
     loadUserSession();
     // Escuta o evento customizado disparado no login/logout
-    window.addEventListener('auth-change', loadUserSession);
-    return () => window.removeEventListener('auth-change', loadUserSession);
+    window.addEventListener("auth-change", loadUserSession);
+    return () => window.removeEventListener("auth-change", loadUserSession);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('@app:token');
-    localStorage.removeItem('@app:user');
-    window.dispatchEvent(new Event('auth-change')); // Atualiza o Header na hora
+    localStorage.removeItem("@app:token");
+    localStorage.removeItem("@app:user");
+    window.dispatchEvent(new Event("auth-change")); // Atualiza o Header na hora
   };
 
   const closeModal = () => setModalType(null);
@@ -44,27 +44,25 @@ export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
         </ul>
       </div>
       <div>
-        <div className="flex flex-row items-center gap-5">
-          <div className="flex flex-row gap-2">
-            <Calendar></Calendar>
-            <p className="font-['coolvetica']">Minhas reservas</p>
-          </div>
-          <div className="flex flex-row gap-2 border bg-white p-1 rounded-md">
-            <PaperBag color="#A23E18"></PaperBag>
-            <code>
-              {qtdItens} itens - R$ {valor}
-            </code>
-          </div>
-
-
-          {/* Renderização condicional: se logado, mostra nome e sair; senão, o botão de login */}
-          {user ? (
+        {/* Renderização condicional: se logado, mostra nome e sair; senão, o botão de login */}
+        {user ? (
+          <div className="flex flex-row items-center gap-5">
+            <div className="flex flex-row gap-2">
+              <Calendar></Calendar>
+              <p className="font-['coolvetica']">Minhas reservas</p>
+            </div>
+            <div className="flex flex-row gap-2 border bg-white p-1 rounded-md">
+              <PaperBag color="#A23E18"></PaperBag>
+              <code>
+                {qtdItens} itens - R$ {valor}
+              </code>
+            </div>
             <div className="flex items-center gap-3 bg-white border border-gray-500 px-3 py 1 rounded-md shadow-sm">
               {/* <div className="flex flex-col text-left"> */}
-                {/* <span className="font-serif text-xs text-gray-500">Olá,</span> */}
-                <span className="font-serif text-sm font-bold text-[#303033] truncate max-w-[120px]">
-                  {user.name}
-                </span>
+              {/* <span className="font-serif text-xs text-gray-500">Olá,</span> */}
+              <span className="font-serif text-sm font-bold text-[#303033] truncate max-w-[30]">
+                {user.name}
+              </span>
               {/* </div> */}
               <button
                 onClick={handleLogout}
@@ -74,31 +72,30 @@ export const Header = ({ qtdItens = 2, valor = 140.82 }) => {
                 <LogOut size={18} />
               </button>
             </div>
-          ) : (
+          </div>
+        ) : (
           <button
-            onClick={() => setModalType('login')}
+            onClick={() => setModalType("login")}
             className="bg-[#E46F45] p-1 rounded-xl cursor-pointer hover:opacity-90 transition-opacity"
             title="Entrar ou Cadastrar"
           >
             <User color="white" />
           </button>
-          )}
-        </div>
+        )}
       </div>
 
-        {/* Modais acionados pelo estado */}
+      {/* Modais acionados pelo estado */}
       <LoginModal
-        isOpen={modalType === 'login'}
+        isOpen={modalType === "login"}
         onClose={closeModal}
-        onSwitchToRegister={() => setModalType('register')}
+        onSwitchToRegister={() => setModalType("register")}
       />
 
       <CadastroModal
-        isOpen={modalType === 'register'}
+        isOpen={modalType === "register"}
         onClose={closeModal}
-        onSwitchToLogin={() => setModalType('login')}
+        onSwitchToLogin={() => setModalType("login")}
       />
-
     </div>
   );
 };
