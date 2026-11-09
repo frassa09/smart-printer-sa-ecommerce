@@ -5,6 +5,7 @@ import { corsConfig } from './middlewares/cors.config.js'
 import authRoutes from './routes/authRoutes.js';
 import './models/relations.js'
 import userRoutes from './routes/userRoutes.js'
+import cardapioRoutes from './routes/cardapioRoutes.js';
 
 
 const app = express()
@@ -14,6 +15,7 @@ app.use(express.json())
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/cardapio', cardapioRoutes);
 
 const port = process.env.SERVER_PORT
 
@@ -24,6 +26,6 @@ app.get('/', (req, res) => {
 })
 
 
-await sequelize.sync({alter: true}).then(() => {
+await sequelize.sync().then(() => {
     app.listen(3000, () => console.log(`Aplicação rodando em http://localhost:${port}`))
 })
