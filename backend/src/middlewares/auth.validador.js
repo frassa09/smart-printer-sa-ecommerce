@@ -7,6 +7,8 @@ export const validateBody = (schema) => (req, res, next) => {
         //abaixo formatando para deixar para front, usando func ZOD apenas a mensagem de erro
         const formattedErrors = result.error.flatten().fieldErrors
 
+        console.log(formattedErrors)
+
         return res.status(400).json({
             error: 'Dados inválidos.',
             details: formattedErrors,
