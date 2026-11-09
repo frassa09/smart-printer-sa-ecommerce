@@ -32,6 +32,8 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       localStorage.setItem('@app:token', data.token);
       localStorage.setItem('@app:user', JSON.stringify(data.user));
 
+      window.dispatchEvent(new Event('auth-change'));
+
       onClose();
       navigate('/');
     } catch (err) {
