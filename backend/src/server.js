@@ -3,6 +3,7 @@ import express from 'express'
 import { sequelize } from './database/init.js'
 import { corsConfig } from './middlewares/cors.config.js'
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js'
 
 
 const app = express()
@@ -11,6 +12,7 @@ app.use(corsConfig)
 app.use(express.json())
 
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 
 const port = process.env.SERVER_PORT
 

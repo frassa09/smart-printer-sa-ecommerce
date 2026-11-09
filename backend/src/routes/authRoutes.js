@@ -1,14 +1,12 @@
 import { Router } from 'express';
-import { register, login, listAllEmployees } from '../controllers/authController.js';
+import { register, login } from '../controllers/authController.js';
 import { validateBody } from '../middlewares/auth.validador.js';
-import { registerSchema, loginSchema } from '../schema/auth.shema.js';
-import { checkRole } from '../middlewares/auth.middleware.js';
+import { registerSchema, loginSchema } from '../schema/auth.schema.js';
 
 const router = Router();
 
+//Rotas Publicas:
 router.post('/register',validateBody(registerSchema), register);
 router.post('/login',validateBody(loginSchema), login);
-router.put('/register/:id', validateBody(registerSchema), checkRole(["ADMIN"]));
-router.get('/employees', checkRole(["ADMIN"]), listAllEmployees);
 
 export default router;
