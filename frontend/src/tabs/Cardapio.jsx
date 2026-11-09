@@ -4,8 +4,8 @@ import { ReservaAlert } from "../../components/ReservaAlert";
 import { ProductBox } from "../../components/ProductBox";
 
 export const Cardapio = () => {
-  const [reserva, setReserva] = useState('');
-  const [categorySelected, setCateogorySelected] = useState('todos');
+  const [reserva, setReserva] = useState("");
+  const [categorySelected, setCateogorySelected] = useState("todos");
 
   return (
     <div className="flex flex-col h-screen w-full bg-[#fff7ff]">
