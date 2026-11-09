@@ -3,6 +3,7 @@ import express from 'express'
 import { sequelize } from './database/init.js'
 import { corsConfig } from './middlewares/cors.config.js'
 import authRoutes from './routes/authRoutes.js';
+import './models/relations.js'
 
 
 const app = express()
