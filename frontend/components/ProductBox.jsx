@@ -1,19 +1,57 @@
 import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Imagem padrão genérica para pratos sem foto cadastrada
-const DEFAULT_IMAGE = "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk=";
+const DEFAULT_IMAGE =
+  "https://media.istockphoto.com/id/1980276924/vector/no-photo-thumbnail-graphic-element-no-found-or-available-image-in-the-gallery-or-album-flat.jpg?s=612x612&w=0&k=20&c=ZBE3NqfzIeHGDPkyvulUw14SaWfDj2rZtyiKv3toItk=";
 
 export const ProductBox = ({
+  qtdAtual,
+  id,
   nome,
   descricao,
   preco,
-  imagemUrl
+  imagemUrl,
+  enviarPedido,
 }) => {
-  const [qtd, setQtd] = useState(0);
+  const qtdSincrona = useRef(qtdAtual);
+  const [qtd, setQtd] = useState(qtdSincrona.current);
+
+  const atualizarPedido = (valor) => {
+    switch (valor.currentTarget.value) {
+      case "adicionar":
+        {
+          qtdSincrona.current++;
+          setQtd(qtdSincrona.current);
+          const objPedido = {
+            id: id,
+            nome: nome,
+            preco: preco,
+            qtd: qtdSincrona.current,
+          };
+
+          enviarPedido(objPedido);
+        }
+        break;
+      case "subtrair":
+        {
+          qtdSincrona.current--;
+          setQtd(qtdSincrona.current);
+          const objPedido = {
+            id: id,
+            nome: nome,
+            preco: preco,
+            qtd: qtdSincrona.current,
+          };
+
+          enviarPedido(objPedido);
+        }
+        break;
+    }
+  };
 
   return (
-    <div className="flex flex-col min-h-75 w-80 border-2 border-gray-400 hover:border-[#A23E18] bg-white transition-colors duration-300">
+    <div className="flex flex-col h-auto max-h-200 w-80 border-2 border-gray-400 hover:border-[#A23E18] bg-white transition-colors duration-300">
       <img
         className="max-h-45 object-cover w-full"
         src={imagemUrl || DEFAULT_IMAGE}
@@ -36,21 +74,21 @@ export const ProductBox = ({
           </div>
         </div>
 
-        {qtd > 0 ? (
+        {qtdSincrona.current > 0 ? (
           <div className="flex w-full border border-[#C8C5CA] self-center flex-row py-3 justify-between px-3 mt-5">
-            <Minus
-              className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200"
-              onClick={() => setQtd(qtd - 1)}
-            />
-            <p className="font-coolvetica">{qtd} porções</p>
-            <Plus
-              className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200"
-              onClick={() => setQtd(qtd + 1)}
-            />
+            <button value={"subtrair"} onClick={(x) => atualizarPedido(x)}>
+              <Minus className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200" />
+            </button>
+
+            <p className="font-coolvetica">{qtdSincrona.current} porções</p>
+            <button value={"adicionar"} onClick={(x) => atualizarPedido(x)}>
+              <Plus className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200" />
+            </button>
           </div>
         ) : (
           <button
-            onClick={() => setQtd(qtd + 1)}
+            value={"adicionar"}
+            onClick={(x) => atualizarPedido(x)}
             className="flex w-full gap-2 border border-[#C8C5CA] hover:border-[#A23E18] transition-colors duration-300 self-center flex-row justify-center py-3 mt-5 cursor-pointer"
           >
             <Plus />
