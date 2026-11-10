@@ -4,7 +4,7 @@ import { LoginModal } from "./LoginModal";
 import { CadastroModal } from "./CadastroModal";
 import { Link } from "react-router-dom";
 
-export const Header = ({ qtdItens, valor }) => {
+export const Header = ({ qtdItens = 0, valor = 0 }) => {
   const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
   const [user, setUser] = useState(null);
 
@@ -29,7 +29,7 @@ export const Header = ({ qtdItens, valor }) => {
 
   const closeModal = () => setModalType(null);
   return (
-    <div className="flex h-25 w-full items-center justify-between px-6 bg-amber-50 border-[#C8C5CA] border-b">
+    <div className="flex h-25 z-1000 sticky top-0 w-full items-center justify-between px-6 bg-amber-50 border-[#C8C5CA] border-b">
       <div className="">
         <p className="font-['coolvetica']">Restaurante Legal</p>
       </div>
