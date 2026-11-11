@@ -1,4 +1,5 @@
 import { Minus, Plus, ReceiptText } from "lucide-react";
+import { formatarMoeda } from "../src/utils/formatarMoeda";
 
 export default function CarrinhoModal({ qtd = 0, itens, atualizarPedido }) {
 
@@ -51,9 +52,9 @@ export default function CarrinhoModal({ qtd = 0, itens, atualizarPedido }) {
             <div className="flex flex-row justify-between">
               <div>
                 <p className="font-coolvetica text-xl">{item.nome}</p>
-                <code>R$ {item.preco} unid.</code>
+                <code>R$ {formatarMoeda(item.preco)} unid.</code>
               </div>
-              <code className="text-xl font-bold">R$ {Number(item.preco) * Number(item.qtd)}</code>
+              <code className="text-xl font-bold">{formatarMoeda(Number(item.preco) * Number(item.qtd))}</code>
             </div>
             <div>
               <div className="flex flex-row items-center h-8 w-24 rounded justify-between px-1 border border-[#C8C5CA] mt-3 gap-1">

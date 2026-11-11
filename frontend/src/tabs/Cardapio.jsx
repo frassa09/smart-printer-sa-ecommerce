@@ -3,6 +3,7 @@ import { Header } from "../../components/Header";
 import { ReservaAlert } from "../../components/ReservaAlert";
 import { ProductBox } from "../../components/ProductBox";
 import CarrinhoModal from "../../components/CarrinhoModal";
+import { api } from "../services/api";
 
 const CATEGORIES = [
   { id: "todos", label: "Todos" },
@@ -48,20 +49,20 @@ export const Cardapio = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/cardapio")
-      .then((res) => res.json())
-      .then((data) => {
+    api
+      .get("/cardapio")
+      .then((res) => {
         // Validação defensiva de boa prática: só define o estado se for um Array
-        if (Array.isArray(data)) {
-          setCardapioItems(data);
-          console.log(data);
+        if (Array.isArray(res.data)) {
+          setCardapioItems(res.data);
+          console.log(res.data);
         } else {
-          console.error("Servidor retornou um formato inesperado:", data);
+          console.error("Servidor retornou um formato inesperado:", res.data);
           setCardapioItems([]);
         }
       })
       .catch((err) => {
-        console.error("Erro ao carregar o cardápio:", err);
+        console.error("Erro ao carregar o cardápio via Axios:", err.message);
         setCardapioItems([]);
       })
       .finally(() => {
@@ -69,7 +70,7 @@ export const Cardapio = () => {
       });
   }, []);
 
-  // Garante que a variável usada no filter seja sempre um array seguro
+  // Garantindo ARRAY
   const safeItems = Array.isArray(cardapioItems) ? cardapioItems : [];
 
   const filteredItems =

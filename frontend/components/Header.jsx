@@ -10,7 +10,7 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
 
   // Função para ler o usuário logado do localStorage
   const loadUserSession = () => {
-    const storedUser = localStorage.getItem("@app:user");
+    const storedUser = localStorage.getItem("@Restaurante:user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
   };
 
@@ -22,8 +22,8 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("@app:token");
-    localStorage.removeItem("@app:user");
+    localStorage.removeItem("@Restaurante:token");
+    localStorage.removeItem("@Restaurante:user");
     window.dispatchEvent(new Event("auth-change")); // Atualiza o Header na hora
   };
 

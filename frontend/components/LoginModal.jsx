@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../src/services/api';
 
 export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -17,27 +18,22 @@ export function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // Faz o POST via Axios
+      const response = await api.post('/auth/login', formData);
+      const { token, user } = response.data;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao entrar');
-      }
-
-      localStorage.setItem('@app:token', data.token);
-      localStorage.setItem('@app:user', JSON.stringify(data.user));
+      // Armazena no localStorage usando as chaves padronizadas
+      localStorage.setItem('@Restaurante:token', token);
+      localStorage.setItem('@Restaurante:user', JSON.stringify(user));
 
       window.dispatchEvent(new Event('auth-change'));
 
       onClose();
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      // Captura mensagens de erro lançadas pela API (ex: 401 Unauthorized)
+      const errorMessage = err.response?.data?.error || 'Erro ao entrar. Verifique suas credenciais.';
+      setError(errorMessage);
     }
   };
 

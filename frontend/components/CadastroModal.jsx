@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { api } from "../src/services/api";
 
 export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
   const [formData, setFormData] = useState({
@@ -21,17 +22,8 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao cadastrar');
-      }
+      // Envia os dados de cadastro via Axios
+      await api.post('/auth/register', formData);
 
       setSuccess(true);
       setTimeout(() => {
@@ -39,7 +31,9 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
         onSwitchToLogin();
       }, 1500);
     } catch (err) {
-      setError(err.message);
+      // Captura erros retornados pelo servidor (ex: e-mail já cadastrado)
+      const errorMessage = err.response?.data?.error || 'Erro ao realizar cadastro.';
+      setError(errorMessage);
     }
   };
 
@@ -82,7 +76,7 @@ export function CadastroModal({ isOpen, onClose, onSwitchToLogin }) {
           <input
             type="password"
             name="password"
-            placeholder="Senha"
+            placeholder="Senha(min 8 char e 1 simbolo)"
             required
             value={formData.password}
             onChange={handleChange}
