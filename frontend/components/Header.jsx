@@ -3,6 +3,7 @@ import { Profiler, useState, useEffect } from "react";
 import { LoginModal } from "./LoginModal";
 import { CadastroModal } from "./CadastroModal";
 import { Link } from "react-router-dom";
+import { formatarMoeda } from "../src/utils/formatarMoeda";
 
 export const Header = ({ qtdItens = 0, valor = 0 }) => {
   const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
@@ -54,7 +55,7 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
             <div className="flex flex-row gap-2 border bg-white p-1 rounded-md">
               <PaperBag color="#A23E18"></PaperBag>
               <code>
-                {qtdItens} itens - R$ {valor}
+                {qtdItens} itens - {formatarMoeda(valor)}
               </code>
             </div>
             <div className="flex items-center gap-3 bg-white border border-gray-500 px-3 py 1 rounded-md shadow-sm">
