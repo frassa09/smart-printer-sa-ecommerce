@@ -14,40 +14,13 @@ export const ProductBox = ({
   imagemUrl,
   enviarPedido,
 }) => {
-  const qtdSincrona = useRef(qtdAtual);
-  const [qtd, setQtd] = useState(qtdSincrona.current);
-
-  const atualizarPedido = (valor) => {
-    switch (valor.currentTarget.value) {
-      case "adicionar":
-        {
-          qtdSincrona.current++;
-          setQtd(qtdSincrona.current);
-          const objPedido = {
-            id: id,
-            nome: nome,
-            preco: preco,
-            qtd: qtdSincrona.current,
-          };
-
-          enviarPedido(objPedido);
-        }
-        break;
-      case "subtrair":
-        {
-          qtdSincrona.current--;
-          setQtd(qtdSincrona.current);
-          const objPedido = {
-            id: id,
-            nome: nome,
-            preco: preco,
-            qtd: qtdSincrona.current,
-          };
-
-          enviarPedido(objPedido);
-        }
-        break;
-    }
+  const atualizarPedido = (qtd) => {
+    enviarPedido({
+      id: id,
+      nome: nome,
+      preco: preco,
+      qtd,
+    });
   };
 
   return (
@@ -74,21 +47,20 @@ export const ProductBox = ({
           </div>
         </div>
 
-        {qtdSincrona.current > 0 ? (
+        {qtdAtual > 0 ? (
           <div className="flex w-full border border-[#C8C5CA] self-center flex-row py-3 justify-between px-3 mt-5">
-            <button value={"subtrair"} onClick={(x) => atualizarPedido(x)}>
+            <button onClick={() => atualizarPedido(qtdAtual - 1)}>
               <Minus className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200" />
             </button>
 
-            <p className="font-coolvetica">{qtdSincrona.current} porções</p>
-            <button value={"adicionar"} onClick={(x) => atualizarPedido(x)}>
+            <p className="font-coolvetica">{qtdAtual} porções</p>
+            <button onClick={() => atualizarPedido(qtdAtual + 1)}>
               <Plus className="hover:text-[#A23E18] cursor-pointer transition-colors duration-200" />
             </button>
           </div>
         ) : (
           <button
-            value={"adicionar"}
-            onClick={(x) => atualizarPedido(x)}
+            onClick={() => atualizarPedido(qtdAtual + 1)}
             className="flex w-full gap-2 border border-[#C8C5CA] hover:border-[#A23E18] transition-colors duration-300 self-center flex-row justify-center py-3 mt-5 cursor-pointer"
           >
             <Plus />
