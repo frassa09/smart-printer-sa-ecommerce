@@ -9,22 +9,22 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
   const [user, setUser] = useState(null);
   const isApp = window.matchMedia("(display-mode: standalone)").matches;
 
-  // Se for PWA, não renderiza nada
-  if (isApp) return null;
-
+  
   // Função para ler o usuário logado do localStorage
   const loadUserSession = () => {
     const storedUser = localStorage.getItem("@Restaurante:user");
     setUser(storedUser ? JSON.parse(storedUser) : null);
   };
-
+  
   useEffect(() => {
     loadUserSession();
     // Escuta o evento customizado disparado no login/logout
     window.addEventListener("auth-change", loadUserSession);
     return () => window.removeEventListener("auth-change", loadUserSession);
   }, []);
-
+  
+  // Se for PWA, não renderiza nada
+  if (isApp) return null;
   const handleLogout = () => {
     localStorage.removeItem("@Restaurante:token");
     localStorage.removeItem("@Restaurante:user");
@@ -45,6 +45,17 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
           <Link className="font-['coolvetica']" to={"/cardapio"}>
             2. Cardápio Antecipado
           </Link>
+
+          {/* 👇 Botão exclusivo para ADMIN */}
+          {user?.role === "ADMIN" && (
+            <Link
+              className="font-['coolvetica'] text-[#A23E18] font-bold"
+              to={"/employees"}
+            >
+              3. Equipe
+            </Link>
+          )}
+
         </ul>
       </div>
       <div>
