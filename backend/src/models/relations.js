@@ -7,7 +7,7 @@ import TableSession from "./TableSession.model.js";
 import MenuItem from "./MenuItem.model.js";
 
 // CORRIGIDO: antes importava de "./MenuItem.model.js" (model errado)
-import MenuItemIngredient from "./MenuItemIngredient.js";
+import MenuItemIngredient from "./MenuItemIngredient.model.js";
 import Product from "./Product.model.js";
 
 User.hasMany(Reservation, { foreignKey: "userId" });
