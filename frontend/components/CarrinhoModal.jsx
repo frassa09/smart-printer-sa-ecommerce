@@ -52,7 +52,7 @@ export default function CarrinhoModal({ qtd = 0, itens, atualizarPedido }) {
             <div className="flex flex-row justify-between">
               <div>
                 <p className="font-coolvetica text-xl">{item.nome}</p>
-                <code>R$ {formatarMoeda(item.preco)} unid.</code>
+                <code>{formatarMoeda(item.preco)} unid.</code>
               </div>
               <code className="text-xl font-bold">{formatarMoeda(Number(item.preco) * Number(item.qtd))}</code>
             </div>

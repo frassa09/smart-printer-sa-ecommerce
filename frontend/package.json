@@ -11,13 +11,15 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "axios": "^1.21.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.62.0",
     "react": "^19.3.1",
     "react-day-picker": "^10.0.2",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.4",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "vite-plugin-pwa": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

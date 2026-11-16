@@ -27,5 +27,5 @@ app.get('/', (req, res) => {
 
 
 await sequelize.sync().then(() => {
-    app.listen(3000, () => console.log(`Aplicação rodando em http://localhost:${port}`))
+    app.listen(port, () => console.log(`Aplicação rodando em http://localhost:${port}`))
 })
