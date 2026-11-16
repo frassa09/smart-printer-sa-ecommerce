@@ -48,6 +48,26 @@ export const Cardapio = () => {
     setItensPedido([[...arrayItens], valorTotal]);
   };
 
+  const alterarQtdItemPedido = (idItem, qtd) => {
+    const arrayItens = itensPedido[0];
+    let valorTotal = 0;
+
+    const item = arrayItens.find((item) => item.id == idItem);
+
+    item.qtd = qtd;
+
+    if(item.qtd === 0){
+      arrayItens.splice(arrayItens.findIndex((x) => x.id == idItem), 1)
+    }
+
+    console.log(arrayItens);
+
+    for (const item of arrayItens) {
+      valorTotal += Number((Number(item.preco) * Number(item.qtd)).toFixed(2));
+    }
+    setItensPedido([[...arrayItens], valorTotal]);
+  };
+
   useEffect(() => {
     api
       .get("/cardapio")
@@ -145,7 +165,12 @@ export const Cardapio = () => {
           </div>
           {loading ? null : (
             <div>
-              <CarrinhoModal qtd={itensPedido[0].length} itens={itensPedido[0]} atualizarPedido={receberPedido}></CarrinhoModal>
+              <CarrinhoModal
+                qtd={itensPedido[0].length}
+                itens={itensPedido[0]}
+                valorTotal={itensPedido[1]}
+                atualizarPedido={alterarQtdItemPedido}
+              ></CarrinhoModal>
             </div>
           )}
         </div>
