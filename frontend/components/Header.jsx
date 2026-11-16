@@ -8,6 +8,10 @@ import { formatarMoeda } from "../src/utils/formatarMoeda";
 export const Header = ({ qtdItens = 0, valor = 0 }) => {
   const [modalType, setModalType] = useState(null); // null, 'login' ou 'register'
   const [user, setUser] = useState(null);
+  const isApp = window.matchMedia("(display-mode: standalone)").matches;
+
+  // Se for PWA, não renderiza nada
+  if (isApp) return null;
 
   // Função para ler o usuário logado do localStorage
   const loadUserSession = () => {
