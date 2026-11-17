@@ -15,28 +15,30 @@ export const Reservas = () => {
             em nosso espaço!
           </p>
         </div>
-        <div className="flex self-center items-center w-[95%] bg-white shadow p-5">
-          <div className="flex flex-row items-center gap-3">
-            <Info
-              color="#A23E18"
-              size={40}
-              className="p-1 bg-[#FFEDE8]"
-            ></Info>
-            <div>
-              <h2 className="font-coolvetica text-2xl">
-                Agendamentos Exclusivos de Fim de Semana
-              </h2>
-              <p className="font-coolvetica">
-                Atendimento intimista com vagas restritas por turno. Disponível
-                estritamente para{" "}
-                <a className="font-bold">Sexta, Sábado e Domingo</a>.
-              </p>
+        <div className="mx-10">
+          <div className="flex self-center items-center w-auto  bg-white shadow p-5">
+            <div className="flex flex-row items-center gap-3">
+              <Info
+                color="#A23E18"
+                size={40}
+                className="p-1 bg-[#FFEDE8]"
+              ></Info>
+              <div>
+                <h2 className="font-coolvetica text-2xl">
+                  Agendamentos Exclusivos de Fim de Semana
+                </h2>
+                <p className="font-coolvetica">
+                  Atendimento intimista com vagas restritas por turno.
+                  Disponível estritamente para{" "}
+                  <a className="font-bold">Sexta, Sábado e Domingo</a>.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex flex-row justify-center shadow items-center bg-white max-w-[60%] overflow-hidden m-7">
+          <div className="flex flex-row justify-between mt-10">
             <Calendario></Calendario>
             <ConfirmarReservaModal></ConfirmarReservaModal>
+          </div>
         </div>
       </main>
     </div>
