@@ -72,7 +72,7 @@ export const Cardapio = () => {
     api
       .get("/cardapio")
       .then((res) => {
-        // Validação defensiva de boa prática: só define o estado se for um Array
+        // Validação garantindo ARRAY
         if (Array.isArray(res.data)) {
           setCardapioItems(res.data);
           console.log(res.data);

@@ -8,7 +8,7 @@ export const checkAuth = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id: 1, role: 'ADMIN' }
+    req.user = decoded; // { id: 1, role: 'ADMIN', isActive: true }
     next();
   } catch {
     return res.status(401).json({ error: 'Token inválido.' });
@@ -20,6 +20,9 @@ export const checkRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ error: 'Acesso negado: sem permissão.' });
+    }
+    if (req.user.role === 'EMPLOYEE' && !req.user.isActive) {
+      return res.status(403).json({ error: 'Acesso negado: funcionário inativo.' });
     }
     next();
   };
