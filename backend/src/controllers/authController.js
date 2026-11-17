@@ -25,7 +25,7 @@ export const register = async (req, res) => {
     
     return res.status(201).json({
       message: 'Usuário cadastrado com sucesso!',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, isActive: user.isActive }
     });
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao cadastrar usuário.' });
@@ -47,14 +47,14 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, isActive: user.isActive },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
     return res.json({
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, isActive: user.isActive }
     });
   } catch (error) {
     return res.status(500).json({ error: 'Erro ao realizar login.' });

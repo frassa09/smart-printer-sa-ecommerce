@@ -4,12 +4,12 @@ import { api } from "../src/services/api";
 
 export const AdminUsers = () => {
   const [employees, setEmployees] = useState([]);
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
 
   const fetchEmployees = async () => {
     try {
-      // 👇 Ajustado para a sua rota existente no backend
-      const res = await api.get("/employees");
+      const res = await api.get("/users/employees");
       setEmployees(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error("Erro ao carregar funcionários:", err);
@@ -22,12 +22,30 @@ export const AdminUsers = () => {
     fetchEmployees();
   }, []);
 
-  const handleActivate = async (id) => {
+  const handlePromote = async (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
     try {
-      await api.put(`/users/${id}/activate`);
+      await api.patch("/users/employees/promote", {
+        email: email.trim().toLowerCase(),
+      });
+      setEmail("");
       fetchEmployees();
     } catch (err) {
-      alert(err.response?.data?.error || "Erro ao ativar funcionário.");
+      alert(err.response?.data?.error || "Erro ao promover usuário.");
+    }
+  };
+
+  const handleToggleStatus = async (id, currentStatus) => {
+    const nextStatus = !currentStatus; // Inverte o valor atual (true -> false / false -> true)
+
+    try {
+      // Envia { isActive: true/false } no body do PUT
+      await api.put(`/users/employees/${id}/activate`, { isActive: nextStatus });
+      fetchEmployees();
+    } catch (err) {
+      alert(err.response?.data?.error || "Erro ao alterar status do funcionário.");
     }
   };
 
@@ -36,6 +54,24 @@ export const AdminUsers = () => {
       <Header />
       <main className="m-7">
         <h1 className="font-['coolvetica'] text-4xl mb-6">Gestão de Equipe</h1>
+
+        {/* Formulário para promover cliente cadastrado para EMPLOYEE */}
+        <form onSubmit={handlePromote} className="flex gap-3 mb-6 max-w-lg">
+          <input
+            type="email"
+            required
+            placeholder="Digite o e-mail cadastrado do funcionário..."
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="flex-1 bg-white border border-gray-300 px-3 py-2 rounded font-serif"
+          />
+          <button
+            type="submit"
+            className="bg-[#303033] text-white px-4 py-2 rounded font-['coolvetica'] cursor-pointer hover:opacity-90"
+          >
+            Promover a Funcionário
+          </button>
+        </form>
 
         {loading ? (
           <p className="font-['coolvetica']">Carregando...</p>
@@ -46,7 +82,6 @@ export const AdminUsers = () => {
                 <tr>
                   <th className="p-3">Nome</th>
                   <th className="p-3">Status</th>
-                  <th className="p-3">Ações</th>
                 </tr>
               </thead>
               <tbody className="font-serif text-sm divide-y">
@@ -55,15 +90,15 @@ export const AdminUsers = () => {
                     <td className="p-3 font-bold">{emp.name}</td>
                     <td className="p-3">
                       {emp.isActive ? (
-                        <span className="text-green-600 font-bold">Ativo</span>
-                      ) : (
-                        <span className="text-amber-600 font-bold">Pendente</span>
-                      )}
-                    </td>
-                    <td className="p-3">
-                      {!emp.isActive && (
                         <button
-                          onClick={() => handleActivate(emp.id)}
+                          onClick={() => handleToggleStatus(emp.id, emp.isActive)}
+                          className="bg-red-600 text-white px-3 py-1 rounded hover:opacity-90 cursor-pointer"
+                        >
+                          Desativar
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleToggleStatus(emp.id, emp.isActive)}
                           className="bg-green-600 text-white px-3 py-1 rounded hover:opacity-90 cursor-pointer"
                         >
                           Ativar Acesso

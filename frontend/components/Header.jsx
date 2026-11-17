@@ -25,6 +25,9 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
   
   // Se for PWA, não renderiza nada
   if (isApp) return null;
+
+  const canManageMenu = user?.role === "ADMIN" || (user?.role === "EMPLOYEE" && user?.isActive === true);
+
   const handleLogout = () => {
     localStorage.removeItem("@Restaurante:token");
     localStorage.removeItem("@Restaurante:user");
@@ -46,13 +49,23 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
             2. Cardápio Antecipado
           </Link>
 
-          {/* 👇 Botão exclusivo para ADMIN */}
+          {/*  Link para ADMIN ou EMPLOYEE ativo gerenciarem pratos e preços */}
+          {canManageMenu && (
+            <Link
+              className="font-['coolvetica'] text-[#A23E18] font-bold"
+              to={"/cardapio/admin"}
+            >
+             3. Gerenciar Cardápio
+            </Link>
+          )}
+
+          {/* Botão exclusivo para ADMIN */}
           {user?.role === "ADMIN" && (
             <Link
               className="font-['coolvetica'] text-[#A23E18] font-bold"
               to={"/employees"}
             >
-              3. Equipe
+              4. Equipe
             </Link>
           )}
 

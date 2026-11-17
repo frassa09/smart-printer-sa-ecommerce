@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Cardapio } from "./tabs/Cardapio";
 import { Reservas } from "./tabs/Reservas";
 import { AdminUsers } from "../components/AdminUsers";
+import { AdminCardapio } from "./tabs/AdminCardapio";
 
 export default function App() {
   return (
@@ -11,12 +12,15 @@ export default function App() {
         <Route path="/" element={<Reservas></Reservas>}></Route>
         <Route
           path="/employees"
-          element={
-            <AdminUsers></AdminUsers>
-             
-           
+          element={<AdminUsers></AdminUsers>      
           }
           />
+          <Route
+          path="/cardapio/admin"
+          element={    
+              <AdminCardapio />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
