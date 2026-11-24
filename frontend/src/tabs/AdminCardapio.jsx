@@ -95,7 +95,7 @@ export const AdminCardapio = () => {
             onChange={(e) =>
               setNovoPrato({ ...novoPrato, description: e.target.value })
             }
-            className="border p-2 rounded font-serif flex-2 min-w-[250px]"
+            className="border p-2 rounded font-serif flex-2 min-w-62.5"
           />
           <select
             value={novoPrato.category}
