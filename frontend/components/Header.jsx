@@ -39,6 +39,12 @@ export const Header = ({ qtdItens = 0, valor = 0 }) => {
   return (
     <div className="flex h-25 z-1000 sticky top-0 w-full items-center justify-between px-6 bg-amber-50 border-[#C8C5CA] border-b">
       <div className="">
+        <img
+          src="/favicon.ico" 
+          alt="Logo Restaurante Legal" 
+          className="w-30 h-8 object-contain"
+        
+        />
         <p className="font-['coolvetica']">Restaurante Legal</p>
       </div>
       <div>
