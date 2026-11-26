@@ -1,0 +1,174 @@
+import sequelize from '../database/init.js';
+import { Order, OrderItemQuantity, MenuItem, Table, TableSession, User} from '../models/relations.js';
+
+// POST /orders -> Cria pedido vinculado ao cliente e à mesa
+export const createOrder = async (req, res) => {
+  const t = await sequelize.transaction();
+
+  try {
+    const userId = req.user.id;
+    const { tableId, items, notes } = req.body;
+
+    if (!tableId || !Array.isArray(items) || items.length === 0) {
+      await t.rollback();
+      return res.status(400).json({ error: 'Informe a mesa e pelo menos um item.' });
+    }
+
+    const table = await Table.findByPk(tableId, { transaction: t });
+    if (!table) {
+      await t.rollback();
+      return res.status(404).json({ error: 'Mesa não encontrada.' });
+    }
+
+    // Reutiliza sessão aberta da mesa (permite vários clientes pedindo na mesma mesa)
+    let session = await TableSession.findOne({
+      where: { tableId: table.id, status: 'OPEN' },
+      transaction: t,
+    });
+
+    if (!session) {
+      session = await TableSession.create(
+        { tableId: table.id, userId, status: 'OPEN' },
+        { transaction: t }
+      );
+    }
+
+    // Busca preços reais no banco para evitar alteração via front-end
+    const menuIds = items.map((i) => i.menuItemId);
+    const dbItems = await MenuItem.findAll({
+      where: { id: menuIds, available: true },
+      transaction: t,
+    });
+
+    if (dbItems.length !== menuIds.length) {
+      await t.rollback();
+      return res.status(400).json({ error: 'Um ou mais itens estão indisponíveis.' });
+    }
+
+    let totalAmount = 0;
+    const orderItemsData = [];
+
+    for (const item of items) {
+      const qty = Number(item.quantity);
+      if (qty <= 0) {
+        await t.rollback();
+        return res.status(400).json({ error: 'Quantidade inválida.' });
+      }
+
+      const menuProduct = dbItems.find((m) => m.id === item.menuItemId);
+      const unitPrice = Number(menuProduct.price);
+      totalAmount += unitPrice * qty;
+
+      orderItemsData.push({
+        menuItemId: menuProduct.id,
+        quantity: qty,
+        unitPrice,
+      });
+    }
+
+    const order = await Order.create(
+      {
+        userId,
+        sessionId: session.id,
+        status: 'PREPARING',
+        printStatus: 'PENDING', // Ponto de leitura para o ESP32 (.ino)
+        totalAmount,
+        notes: notes?.trim() || null,
+      },
+      { transaction: t }
+    );
+
+    for (const data of orderItemsData) {
+      await OrderItemQuantity.create(
+        { ...data, orderId: order.id },
+        { transaction: t }
+      );
+    }
+
+    await t.commit();
+
+    // Gancho para impressão automática na Cozinha (ESP32 .ino)
+    console.log(`[ESP32 - COZINHA] Mesa ${table.number || table.id} | Pedido #${order.id}`);
+
+    return res.status(201).json({
+      message: 'Pedido enviado para a cozinha!',
+      order,
+      sessionId: session.id,
+    });
+  } catch (error) {
+    await t.rollback();
+    console.error('Erro ao criar pedido:', error);
+    return res.status(500).json({ error: 'Erro ao processar pedido.' });
+  }
+};
+
+// GET /orders/table/:tableId -> Lista todos os pedidos da sessão aberta da mesa
+export const getTableOrders = async (req, res) => {
+  try {
+    const { tableId } = req.params;
+
+    const session = await TableSession.findOne({
+      where: { tableId, status: 'OPEN' },
+    });
+
+    if (!session) {
+      return res.status(200).json({ sessionId: null, orders: [], totalTable: 0 });
+    }
+
+    const orders = await Order.findAll({
+      where: { sessionId: session.id },
+      include: [
+        { model: User, attributes: ['id', 'name'] },
+        {
+          model: OrderItemQuantity,
+          include: [{ model: MenuItem, attributes: ['id', 'title'] }],
+        },
+      ],
+      order: [['createdAt', 'ASC']],
+    });
+
+    const totalTable = orders.reduce((acc, o) => acc + Number(o.totalAmount), 0);
+
+    return res.status(200).json({ sessionId: session.id, orders, totalTable });
+  } catch (error) {
+    return res.status(500).json({ error: 'Erro ao buscar pedidos da mesa.' });
+  }
+};
+
+// POST /orders/table/:tableId/close -> Encerra conta da mesa e dispara fechamento do caixa
+export const closeTableAccount = async (req, res) => {
+  try {
+    const { tableId } = req.params;
+
+    const session = await TableSession.findOne({
+      where: { tableId, status: 'OPEN' },
+    });
+
+    if (!session) {
+      return res.status(404).json({ error: 'Nenhuma conta aberta para esta mesa.' });
+    }
+
+    const orders = await Order.findAll({
+      where: { sessionId: session.id },
+      include: [{ model: User, attributes: ['id', 'name'] }],
+    });
+
+    const totalTable = orders.reduce((acc, o) => acc + Number(o.totalAmount), 0);
+
+    await Order.update({ status: 'DELIVERED' }, { where: { sessionId: session.id } });
+    session.status = 'CLOSED';
+    session.closedAt = new Date();
+    await session.save();
+
+    // Gancho para impressão automática no Caixa (ESP32 .ino)
+    console.log(`[ESP32 - CAIXA] Mesa ${tableId} fechada | Total: R$ ${totalTable.toFixed(2)}`);
+
+    return res.status(200).json({
+      message: 'Conta encerrada e enviada para impressão no caixa!',
+      totalTable,
+    });
+  } catch (error) {
+    console.error('Erro ao fechar conta:', error);
+    return res.status(500).json({ error: 'Erro ao encerrar conta da mesa.' });
+  }
+};

@@ -15,6 +15,10 @@ export const Order = sequelize.define('Order', {
     allowNull: false,
     defaultValue: 0.0,
   },
+  notes: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
 
 }, {timestamps: true});
 

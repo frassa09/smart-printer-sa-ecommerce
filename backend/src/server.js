@@ -6,7 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import './models/relations.js'
 import userRoutes from './routes/userRoutes.js'
 import cardapioRoutes from './routes/cardapioRoutes.js';
-
+import orderRoutes from './routes/orderRoutes.js'
 
 const app = express()
 
@@ -16,6 +16,7 @@ app.use(express.json())
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/cardapio', cardapioRoutes);
+app.use('/orders', orderRoutes);
 
 const port = process.env.SERVER_PORT
 

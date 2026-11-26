@@ -3,6 +3,7 @@ import { Header } from "../../components/Header";
 import { ReservaAlert } from "../../components/ReservaAlert";
 import { ProductBox } from "../../components/ProductBox";
 import CarrinhoModal from "../../components/CarrinhoModal";
+import { ContaMesa } from "../../components/ContaMesa";
 import { api } from "../services/api";
 
 const CATEGORIES = [
@@ -19,26 +20,38 @@ export const Cardapio = () => {
   const [loading, setLoading] = useState(true);
 
   const [itensPedido, setItensPedido] = useState([[], 0]);
+  const [tableId, setTableId] = useState("");
+  const [refreshConta, setRefreshConta] = useState(0);
+
+  // Limpa sacola e mesa selecionada ao fazer logout
+  useEffect(() => {
+    const handleAuthChange = () => {
+      const token = localStorage.getItem("@Restaurante:token");
+      if (!token) {
+        setItensPedido([[], 0]);
+        setTableId("");
+        setRefreshConta((prev) => prev + 1);
+      }
+    };
+
+    window.addEventListener("auth-change", handleAuthChange);
+    return () => window.removeEventListener("auth-change", handleAuthChange);
+  }, []);
 
   const receberPedido = (pedido) => {
     const arrayItens = itensPedido[0];
     let valorTotal = 0;
 
-    console.log(pedido);
-
     const indexExistente = arrayItens.findIndex(
-      (item) => item.id === pedido.id,
+      (item) => item.id === pedido.id
     );
 
     if (indexExistente !== -1) {
       pedido.qtd === 0
         ? arrayItens.splice(indexExistente, 1)
         : (arrayItens[indexExistente] = pedido);
-
-      console.log(arrayItens);
     } else {
       arrayItens.push(pedido);
-      console.log(arrayItens);
     }
 
     for (const item of arrayItens) {
@@ -53,14 +66,16 @@ export const Cardapio = () => {
     let valorTotal = 0;
 
     const item = arrayItens.find((item) => item.id == idItem);
+    if (!item) return;
 
     item.qtd = qtd;
 
-    if(item.qtd === 0){
-      arrayItens.splice(arrayItens.findIndex((x) => x.id == idItem), 1)
+    if (item.qtd === 0) {
+      arrayItens.splice(
+        arrayItens.findIndex((x) => x.id == idItem),
+        1
+      );
     }
-
-    console.log(arrayItens);
 
     for (const item of arrayItens) {
       valorTotal += Number((Number(item.preco) * Number(item.qtd)).toFixed(2));
@@ -68,16 +83,18 @@ export const Cardapio = () => {
     setItensPedido([[...arrayItens], valorTotal]);
   };
 
+  const handlePedidoEnviado = () => {
+    setItensPedido([[], 0]);
+    setRefreshConta((prev) => prev + 1);
+  };
+
   useEffect(() => {
     api
       .get("/cardapio")
       .then((res) => {
-        // Validação garantindo ARRAY
         if (Array.isArray(res.data)) {
-          setCardapioItems(res.data);
-          console.log(res.data);
+          setCardapioItems(res.data.filter((item) => item.available !== false));
         } else {
-          console.error("Servidor retornou um formato inesperado:", res.data);
           setCardapioItems([]);
         }
       })
@@ -90,7 +107,6 @@ export const Cardapio = () => {
       });
   }, []);
 
-  // Garantindo ARRAY
   const safeItems = Array.isArray(cardapioItems) ? cardapioItems : [];
 
   const filteredItems =
@@ -105,7 +121,7 @@ export const Cardapio = () => {
         <div>{reserva ? <ReservaAlert /> : null}</div>
 
         <div className="m-7">
-          <h1 className="font-['coolvetica'] text-4xl">Cardápio Antecipado</h1>
+          <h1 className="font-['coolvetica'] text-4xl">Cardápio</h1>
           <p className="font-['coolvetica'] mt-3">
             Escolha entre os deliciosos itens de nosso cardápio que são
             preparados com todo o cuidado e carinho
@@ -131,17 +147,16 @@ export const Cardapio = () => {
           </ul>
         </div>
 
-        <div className="flex m-7 flex-row">
+        <div className="flex m-7 flex-row items-start justify-between gap-6">
           {/* Grade de Produtos */}
-          <div className=" flex max-w-[80%] flex-wrap gap-6 justify-start">
+          <div className="flex max-w-[75%] flex-wrap gap-6 justify-start">
             {loading ? (
               <p className="font-['coolvetica']">Carregando cardápio...</p>
             ) : filteredItems.length > 0 ? (
               filteredItems.map((item) => {
                 const itemNoPedido = itensPedido[0].find(
-                  (i) => i.id === item.id,
+                  (i) => i.id === item.id
                 );
-
                 const qtdAtual = itemNoPedido ? itemNoPedido.qtd : 0;
 
                 return (
@@ -163,14 +178,20 @@ export const Cardapio = () => {
               </p>
             )}
           </div>
-          {loading ? null : (
-            <div>
+
+          {/* Coluna Lateral: Sacola + Conta da Mesa */}
+          {!loading && (
+            <div className="sticky top-28 flex flex-col">
               <CarrinhoModal
                 qtd={itensPedido[0].length}
                 itens={itensPedido[0]}
                 valorTotal={itensPedido[1]}
                 atualizarPedido={alterarQtdItemPedido}
-              ></CarrinhoModal>
+                tableId={tableId}
+                onChangeTableId={setTableId}
+                onPedidoEnviado={handlePedidoEnviado}
+              />
+              <ContaMesa tableId={tableId} refreshKey={refreshConta} />
             </div>
           )}
         </div>
